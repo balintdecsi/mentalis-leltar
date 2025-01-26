@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -5,8 +6,14 @@ import re
 from textwrap import wrap
 import matplotlib as mpl
 from cycler import cycler
+import random
+import string
 
-raw_df = pd.read_csv("mentalisLeltar\\Csocsó-mentális-leltár-válaszok.csv", sep=";", index_col=1)
+def anonymize_string(s):
+    return ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(len(s)))
+
+
+raw_df = pd.read_csv("Csocsó-mentális-leltár-válaszok.csv", sep=";", index_col=1)
 if raw_df.shape[1] != 32:
     raise Exception("Number of columns isn't 32, please check input file")
 
@@ -62,23 +69,25 @@ for faktor in range(6):
 
 
 for ember in range(len(jeligek)):
+    anonim_ember = anonymize_string(jeligek[ember].strip())
+
     for faktor in range(6):
         y[faktor] = np.nanmean(feedback_data[ember,faktorok[faktor]])
     
     rects = ax2.bar(x, y)
     ax2.bar_label(rects, labels=np.round(y,1), label_type="edge")
-    fig.suptitle(t=re.sub(r"_", r" ", jeligek[ember].strip("_").upper()), x=0.05, y=0.95, ha="left", va="top", size="large")
-    ax2.set_ylim(1, 5, 1)
+    fig.suptitle(t=re.sub(r"_", r" ", anonim_ember), x=0.05, y=0.95, ha="left", va="top", size="large")
+    ax2.set_ylim(1, 5)
     ax2.set_yticks([1.0, 2.0, 3.0, 4.0, 5.0], minor=False)
     ax2.set_title("Eredmények\n", style="italic", color="paleturquoise", va="bottom")
     ax2.set_frame_on(False)
-    ax2.grid(b=True, axis="y", linewidth=1, alpha=0.25)
+    ax2.grid(True, axis="y", linewidth=1, alpha=0.25)
     ax2.tick_params(length=0)
     ax2.tick_params(axis="x", labelsize="small", rotation=50)
     ax2.text(x=2.5, y=-1.2, s="1=nem kell fejleszteni    5=biztos fejlesztésre szorul", size="small", ha="center")
     ax2.bar(x, y_mu, alpha=0.35, color="grey")
 
-    plt.savefig("mentalisLeltar\\diagramok\\" + jeligek[ember].strip("_") + ".png")
+    plt.savefig(os.path.join("diagramok", anonim_ember + ".png"))
     
     ax2.clear()
 
