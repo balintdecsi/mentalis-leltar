@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "mentalis-leltar"
+description = "A visualization script which I wrote for a friend. It processes data from psychology-related survey and creates diagram of it."
+authors = ["balintdecsi <balint.decsi@gmail.com>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.11"
+ipykernel = "^6.29.5"
+numpy = "^2.2.2"
+pandas = "^2.2.3"
+matplotlib = "^3.10.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
